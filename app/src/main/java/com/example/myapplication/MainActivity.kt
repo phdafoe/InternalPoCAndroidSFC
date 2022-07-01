@@ -1,5 +1,7 @@
 package com.example.myapplication
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.webkit.PermissionRequest
@@ -12,13 +14,21 @@ import androidx.appcompat.app.AppCompatActivity
 class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
+    private val MY_CAMERA_REQUEST_CODE = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         webView = findViewById(R.id.webview)
-        webView.settings.setJavaScriptEnabled(true)
+
+        webView.settings.domStorageEnabled = true
+        webView.settings.javaScriptEnabled = true
         webView.settings.mediaPlaybackRequiresUserGesture = false
+
+
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions( arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO), MY_CAMERA_REQUEST_CODE)
+        }
 
         webView.setWebChromeClient(object : WebChromeClient() {
             override fun onPermissionRequest(request: PermissionRequest) {
